@@ -25,7 +25,6 @@ def _run(cmd, cwd=None, check=True):
 def setup_backend():
     """Create virtualenv (if needed) and install Python dependencies."""
     pip = os.path.join(VENV_DIR, "bin", "pip") if os.name != "nt" else os.path.join(VENV_DIR, "Scripts", "pip.exe")
-    python = os.path.join(VENV_DIR, "bin", "python") if os.name != "nt" else os.path.join(VENV_DIR, "Scripts", "python.exe")
 
     if not os.path.isdir(VENV_DIR):
         print("\n[1/4] Creating virtual environment …")
@@ -35,7 +34,6 @@ def setup_backend():
 
     print("\n[2/4] Installing Python dependencies …")
     _run([pip, "install", "-r", os.path.join(BACKEND_DIR, "requirements.txt")])
-    return python
 
 
 def setup_frontend():
@@ -50,7 +48,7 @@ def setup_frontend():
     return True
 
 
-def start_services(python, frontend_ready):
+def start_services(frontend_ready):
     """Start backend (uvicorn) and optionally frontend (vite dev)."""
     uvicorn = os.path.join(VENV_DIR, "bin", "uvicorn") if os.name != "nt" else os.path.join(VENV_DIR, "Scripts", "uvicorn.exe")
 
@@ -88,22 +86,23 @@ def main():
     print("  RiskShield — Local Python Runner")
     print("=" * 50)
 
-    python = setup_backend()
+    setup_backend()
     frontend_ready = setup_frontend()
 
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)
 
-    start_services(python, frontend_ready)
+    start_services(frontend_ready)
 
     # Keep the script alive until interrupted
     try:
         while True:
             time.sleep(1)
-            # Exit if backend dies
-            if processes and processes[0].poll() is not None:
-                print("Backend process exited.")
-                cleanup()
+            # Exit if any child process dies
+            for proc in processes:
+                if proc.poll() is not None:
+                    print("A child process exited.")
+                    cleanup()
     except KeyboardInterrupt:
         cleanup()
 
