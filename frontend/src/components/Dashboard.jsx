@@ -81,14 +81,14 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Devices', value: stats?.total_devices || 0, color: 'cyan' },
-          { label: 'Open Risks', value: stats?.open_risks || 0, color: 'red' },
-          { label: 'Avg Risk Score', value: (stats?.avg_risk_score || 0).toFixed(3), color: 'yellow' },
-          { label: 'Quarantined', value: stats?.quarantined_devices || 0, color: 'orange' },
+          { label: 'Devices', value: stats?.total_devices || 0, colorClass: 'text-cyan-400' },
+          { label: 'Open Risks', value: stats?.open_risks || 0, colorClass: 'text-red-400' },
+          { label: 'Avg Risk Score', value: (stats?.avg_risk_score || 0).toFixed(3), colorClass: 'text-yellow-400' },
+          { label: 'Quarantined', value: stats?.quarantined_devices || 0, colorClass: 'text-orange-400' },
         ].map((card) => (
           <div key={card.label} className="bg-gray-800 rounded-lg p-4 border border-gray-700">
             <p className="text-gray-400 text-sm">{card.label}</p>
-            <p className={`text-3xl font-bold text-${card.color}-400`}>{card.value}</p>
+            <p className={`text-3xl font-bold ${card.colorClass}`}>{card.value}</p>
           </div>
         ))}
       </div>
