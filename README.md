@@ -27,14 +27,31 @@ RiskShield identifies and eliminates risks in end-user systems within a network 
 
 ### Prerequisites
 
-- Python 3.10+ and Node.js 18+
-- Or Docker & Docker Compose
+- Python 3.10+
+- Node.js 18+ (optional — only needed for the frontend UI)
 
-### Option 1: Local Development
+### One-command setup
 
 ```bash
-# 1. Backend setup
+python run.py
+```
+
+This will:
+1. Create a Python virtual environment (`venv/`)
+2. Install all backend dependencies
+3. Install frontend dependencies (if `npm` is available)
+4. Start the **backend** on http://localhost:8000
+5. Start the **frontend** dev server on http://localhost:5173 (if Node.js is installed)
+
+Press `Ctrl+C` to stop both services.
+
+### Manual setup
+
+```bash
+# 1. Backend
 cd backend
+python -m venv ../venv
+source ../venv/bin/activate   # Windows: ..\venv\Scripts\activate
 pip install -r requirements.txt
 
 # 2. Generate demo data (discovers 5 devices, trains ML models)
@@ -43,15 +60,15 @@ cd .. && python demo/generate_data.py
 # 3. Start backend server
 cd backend && uvicorn app.main:app --reload --port 8000
 
-# 4. Frontend setup (new terminal)
+# 4. Frontend (new terminal — optional, requires Node.js 18+)
 cd frontend
 npm install
 npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+Open **http://localhost:5173** in your browser (or http://localhost:8000/docs for the API).
 
-### Option 2: Docker Compose
+### Docker (alternative)
 
 ```bash
 docker-compose up --build
